@@ -28,7 +28,7 @@ $ docker compose up
 
 ## Installation
 
-you need to run npm install for every app if you going run them separately for development and debugging
+you need to run npm install for every app if you are going run them separately for development and debugging
 
 ```bash
 # development

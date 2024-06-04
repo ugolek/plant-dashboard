@@ -42,7 +42,7 @@ export class DashboardController {
 
   @Get('plant/:id')
   async getPlant(@Param('id') id: string) {
-    return this.dashboardService.getPlantById(id);
+    return this.dashboardService.getAllPlantData(id);
   }
 
   @Get('grow-history/:plantId')

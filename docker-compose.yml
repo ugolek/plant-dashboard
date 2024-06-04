@@ -1,0 +1,49 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: ./apps/dashboard/Dockerfile
+      target: development
+    command: npm run start:dev dashboard
+    networks:
+        - rabbitmq_nodejs
+    env_file:
+      - ./apps/dashboard/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    networks:
+        - rabbitmq_nodejs
+    env_file:
+      - ./apps/auth/.env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3001:3001
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    hostname: 'rabbitmq'
+    environment:
+      RABBITMQ_FEATURE_FLAGS: quorum_queue,implicit_default_bindings
+    ports:
+        - 5672:5672
+        - 15672:15672
+    networks:
+        - rabbitmq_nodejs
+    restart: always
+
+networks:
+  rabbitmq_nodejs:
+    driver: bridge

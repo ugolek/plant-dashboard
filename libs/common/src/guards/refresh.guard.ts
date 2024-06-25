@@ -3,10 +3,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-    constructor(private jwtService: JwtService) {
+export class RefreshJWTGuard extends AuthGuard('jwt') {
+    constructor(private jwtService: JwtService, private configService: ConfigService) {
         super();
     }
 
@@ -19,7 +20,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         }
 
         try {
-            const payload = this.jwtService.verifyAsync(token);
+            const payload = this.jwtService.verifyAsync(token, { secret: this.configService.get<string>('AUTH_REFRESH_SECRET') });
+            
             request['user'] = payload;
         } catch (error) {
             throw new UnauthorizedException();
@@ -34,13 +36,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
             return null;
         }
         const parts = authHeader.split(' ');
-        if (parts.length !== 2) {
+        if (parts.length !== 2) { 
             return null;
         }
         const [type, token] = parts;
 
 
-        if (/^Bearer$/i.test(type)) {
+        if (/^Refresh$/i.test(type)) {
             return token;
         }
 

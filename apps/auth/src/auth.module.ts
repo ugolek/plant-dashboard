@@ -8,7 +8,6 @@ import { RmqModule, User, UserSchema, UsersModule } from 'libs/common/src/module
 import { AUTH } from './constants/services';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi'
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from '../../../libs/common/src/strategies';
 
@@ -21,6 +20,7 @@ import { LocalStrategy } from '../../../libs/common/src/strategies';
         RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
         MONGODB_URI: Joi.string().required(),
         AUTH_SECRET: Joi.string().required(),
+        AUTH_REFRESH_SECRET: Joi.string().required(),
       }),
       envFilePath: ['./apps/auth/.env'],
     }),
